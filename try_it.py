@@ -17,7 +17,7 @@ res = requests.post(
                 'store_id': 900014452,
                 'to_user_distance': 2.6714317179354317,
                 'to_user_elevation': 1.72265625,
-                'total_earning': 4400,
+                'total_earning': 4600,
                 'created_at': '2017-09-07T20:15:19Z',
             }
         ]

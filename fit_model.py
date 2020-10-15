@@ -1,3 +1,5 @@
+import os
+
 from modeler.Modeler import Modeler
 
 """
@@ -8,11 +10,15 @@ Available classifiers:
     'AdaBoostClassifier'
     'svm'
 """
-clf = 'DecisionTreeClassifier'
+clf = 'GaussianNB'
 
 
 def fit_model():
-    Modeler().fit(clf=clf, scores=True)
+    if os.path.exists('trained_models/taken.model'):
+        os.remove('trained_models/taken.model')
+
+    m = Modeler()
+    m.fit(clf=clf, scores=True)
 
 
 if __name__ == '__main__':

@@ -23,9 +23,9 @@ CLASSIFIERS = {
 class Modeler:
     def __init__(self):
         self.df = pd.read_csv(DATA_PATH)
-        try:
-            self.model = joblib.load('models/taken.model')
-        except:
+        if os.path.exists('trained_models/taken.model'):
+            self.model = joblib.load('trained_models/taken.model')
+        else:
             self.model = None
 
     def fit(self, clf='GaussianNB', scores=True):
@@ -37,15 +37,15 @@ class Modeler:
         X, y = self.df.drop(['taken', 'order_id', 'created_at'], axis=1), self.df['taken']
 
         self.model = CLASSIFIERS[clf].fit(X, y)
-        joblib.dump(self.model, 'models/taken.model')
+        joblib.dump(self.model, 'trained_models/taken.model')
 
         if scores:
             scores = cross_val_score(CLASSIFIERS[clf], X, y, cv=10, scoring='accuracy')
-            print(clf)
+            print('CLASSIFIER -> ', clf)
             print('Mean: ', scores.mean(), ', STD: ', scores.std())
 
     def predict(self, orders):
-        if not os.path.exists('models/taken.model'):
+        if not os.path.exists('trained_models/taken.model'):
             raise Exception('Model not trained yet. Call .fit() before making predictions')
 
         if len(orders) != 7:
