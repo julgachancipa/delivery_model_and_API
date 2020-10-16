@@ -1,34 +1,40 @@
 import pandas as pd
 
-from flask import Flask, jsonify, request
-from flask_restful import Api, Resource
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from modeler.Modeler import Modeler
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import Order
 
 app = Flask(__name__)
-api = Api(app)
+
+ENV = 'prod'
+
+if ENV == 'dev':
+    app.debug = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+else:
+    app.debug = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://temgoglgvsgkyg:ae0b97fc6a4164d68a0de5426f8668e2c6e5217b7ead5a4172c9c9c037150feb@ec2-34-232-24-202.compute-1.amazonaws.com:5432/dabe6sk0k8qls1'
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 
-def load_session():
-    """
-    It loads the SQLAlquemy session
-    :return: session
-    """
-    db_path = 'db.sqlite'
-    engine = create_engine('sqlite:///%s' % db_path, echo=True)
+class Order(db.Model):
+    __tablename__ = 'orders'
 
-    session = sessionmaker(bind=engine)
-    session = session()
-    return session
+    order_id = db.Column(db.Integer, primary_key=True)
+    store_id = db.Column(db.Integer, nullable=False)
+    to_user_distance = db.Column(db.Float, nullable=False)
+    to_user_elevation = db.Column(db.Float, nullable=False)
+    total_earning = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.String, nullable=False)
+    taken = db.Column(db.Integer, nullable=False)
 
 
 def order_to_db(order_data, prediction):
-    session = load_session()
-
     order = (
-        session.query(Order)
+        db.session.query(Order)
         .filter_by(order_id=order_data['order_id'])
         .first()
     )
@@ -43,53 +49,53 @@ def order_to_db(order_data, prediction):
     order.created_at = order_data['created_at']
     order.taken = prediction
 
-    session.add(order)
-    session.commit()
-    session.commit()
-    session.close()
+    db.session.add(order)
+    db.session.commit()
 
 
-class Predict(Resource):
-    @staticmethod
-    def post():
-        predictions = {}
-        orders = request.get_json()
-        modeler = Modeler()
-
-        for order in orders:
-            order_id = order['order_id']
-            store_id = order['store_id']
-            to_user_distance = order['to_user_distance']
-            to_user_elevation = order['to_user_elevation']
-            total_earning = order['total_earning']
-            created_at = order['created_at']
-
-            date = pd.to_datetime(created_at)
-            day_of_year = date.dayofyear
-            day_of_week = date.dayofweek
-            minutes = date.hour * 60 + date.minute
-
-            order_info = [store_id, to_user_distance, to_user_elevation,
-                          total_earning, day_of_year, day_of_week, minutes]
-            prediction = modeler.predict(order_info)
-
-            predictions[order_id] = {
-                'input': {
-                    'order_id': order_id,
-                    'store_id': store_id,
-                    'to_user_distance': to_user_distance,
-                    'to_user_elevation': to_user_elevation,
-                    'total_earning': total_earning,
-                    'created_at': created_at
-                },
-                'taken': prediction
-            }
-            # order_to_db(order, prediction)
-
-        return jsonify(predictions)
+@app.route('/')
+def index():
+    return jsonify({'Hi': 200})
 
 
-api.add_resource(Predict, '/predict')
+@app.route('/predict', methods=['POST'])
+def predict():
+    predictions = {}
+    orders = request.get_json()
+    modeler = Modeler()
+
+    for order in orders:
+        order_id = order['order_id']
+        store_id = order['store_id']
+        to_user_distance = order['to_user_distance']
+        to_user_elevation = order['to_user_elevation']
+        total_earning = order['total_earning']
+        created_at = order['created_at']
+
+        date = pd.to_datetime(created_at)
+        day_of_year = date.dayofyear
+        day_of_week = date.dayofweek
+        minutes = date.hour * 60 + date.minute
+
+        order_info = [store_id, to_user_distance, to_user_elevation,
+                      total_earning, day_of_year, day_of_week, minutes]
+        prediction = modeler.predict(order_info)
+
+        predictions[order_id] = {
+            'input': {
+                'order_id': order_id,
+                'store_id': store_id,
+                'to_user_distance': to_user_distance,
+                'to_user_elevation': to_user_elevation,
+                'total_earning': total_earning,
+                'created_at': created_at
+            },
+            'taken': prediction
+        }
+        order_to_db(order, prediction)
+
+    return jsonify(predictions)
+
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run()

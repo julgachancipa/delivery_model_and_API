@@ -1,8 +1,4 @@
-from sqlalchemy import create_engine
+from app import db
 
-from models import Base
-
-engine = create_engine("sqlite:///db.sqlite")
-
-if __name__ == "__main__":
-    Base.metadata.create_all(engine)
+if __name__ == '__main__':
+    db.create_all()
