@@ -2,15 +2,16 @@ import requests
 import pprint
 
 res = requests.post(
+    # url='https://taken-model.herokuapp.com/predict',
     url='http://localhost:5000/predict',
     json=[
             {
-                'order_id': 14364873,
+                'order_id': 14364800,
                 'store_id': 30000009,
                 'to_user_distance': 29.4781006757058885,
                 'to_user_elevation': -72.71936035156295,
-                'total_earning': 5000,
-                'created_at': '2017-09-09T20:02:17Z',
+                'total_earning': 7000,
+                'created_at': '2017-12-09T20:02:17Z',
             },
             {
                 'order_id': 14370258,
