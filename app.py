@@ -55,7 +55,7 @@ def order_to_db(order_data, prediction):
 
 @app.route('/')
 def index():
-    return jsonify({'¿Quién es fea?': 'Pos Laura'})
+    return jsonify({'¿Quien es fea?': 'Pos Laura'})
 
 
 @app.route('/predict', methods=['POST'])
