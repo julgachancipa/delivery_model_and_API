@@ -2,8 +2,8 @@ import requests
 import pprint
 
 res = requests.post(
-    # url='https://taken-model.herokuapp.com/predict',
-    url='http://localhost:5000/predict',
+    url='https://taken-model.herokuapp.com/predict',
+    # url='http://localhost:5000/predict',
     json=[
             {
                 'order_id': 14364800,
