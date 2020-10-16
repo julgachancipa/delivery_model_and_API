@@ -31,6 +31,9 @@ class Order(db.Model):
     created_at = db.Column(db.String, nullable=False)
     taken = db.Column(db.Integer, nullable=False)
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 def order_to_db(order_data, prediction):
     order = (
@@ -55,8 +58,11 @@ def order_to_db(order_data, prediction):
 
 @app.route('/')
 def index():
-    all_orders = db.session.query(Order).all()
-    return jsonify(all_orders)
+    orders = []
+    orders_obj = db.session.query(Order).all()
+    for order in orders_obj:
+        orders.append(order.as_dict())
+    return jsonify(orders)
 
 
 @app.route('/predict', methods=['POST'])
