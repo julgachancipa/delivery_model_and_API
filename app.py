@@ -84,7 +84,7 @@ class Predict(Resource):
                 },
                 'taken': prediction
             }
-            order_to_db(order, prediction)
+            # order_to_db(order, prediction)
 
         return jsonify(predictions)
 
