@@ -55,7 +55,8 @@ def order_to_db(order_data, prediction):
 
 @app.route('/')
 def index():
-    return jsonify({'¿Quien es fea?': 'Pos Laura'})
+    all_orders = db.session.query(Order).all()
+    return jsonify(all_orders)
 
 
 @app.route('/predict', methods=['POST'])
