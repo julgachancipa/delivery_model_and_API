@@ -1,12 +1,12 @@
 import pandas as pd
-
+import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from modeler.Modeler import Modeler
 
 app = Flask(__name__)
 
-ENV = 'prod'
+ENV = os.environ['ENV']
 
 if ENV == 'dev':
     app.debug = True
