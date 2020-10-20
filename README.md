@@ -26,7 +26,7 @@ docker-compose up --build
 
 NOTE: if you are running it locally the url will be http://0.0.0.0:5000/
 
-### GET: stored estimations
+### - GET: stored estimations
 
 https://taken-model.herokuapp.com/
 
@@ -36,7 +36,7 @@ Response:
 [{"created_at":"2017-09-07T20:15:19Z","order_id":14370258,"store_id":900014452,"taken":1,"to_user_distance":2.6714317179354317,"to_user_elevation":1.72265625,"total_earning":4600},{"created_at":"2017-12-09T20:02:17Z","order_id":18764800,"store_id":300000179,"taken":1,"to_user_distance":300.4781006757059,"to_user_elevation":500.71936035156295,"total_earning":7000}]
 ```
 
-### POST: make one or multiple estimations
+### - POST: make one or multiple estimations
 
 https://taken-model.herokuapp.com/predict
 
