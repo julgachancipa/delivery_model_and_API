@@ -27,6 +27,7 @@ docker-compose up --build
 NOTE: if you are running it locally the url will be http://0.0.0.0:5000/
 
 ### - GET: stored estimations
+Returns all the estimations saved in the database
 
 https://taken-model.herokuapp.com/
 
@@ -37,7 +38,7 @@ Response:
 ```
 
 ### - POST: make one or multiple estimations
-
+Requests a list of dictionaries, where each dictionary is an order.
 https://taken-model.herokuapp.com/predict
 
 #### Example
