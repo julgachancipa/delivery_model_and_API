@@ -6,10 +6,9 @@ from modeler.Modeler import Modeler
 
 app = Flask(__name__)
 
-ENV = os.environ['ENV']
+ENV = os.environ['ENVIROMENT']
 
 if ENV == 'dev':
-    app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 else:
     app.debug = False
@@ -54,6 +53,11 @@ def order_to_db(order_data, prediction):
 
     db.session.add(order)
     db.session.commit()
+
+
+@app.route('/test')
+def test():
+    return jsonify({200: 'Hi there :)'})
 
 
 @app.route('/')
@@ -105,4 +109,7 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run()
+    if ENV == 'dev':
+        app.run(debug=True, host='0.0.0.0') 
+    else:
+        app.run()
