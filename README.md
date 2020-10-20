@@ -22,7 +22,23 @@ Build image and start container:
 docker-compose up --build
 ```
 
-## Documentation
+## Model Documentation
+
+By default the model is fitted with the GaussianNB classifier, but you can change the **clf** variable in the fit_model.py and run the file again
+
+```
+"""
+Available classifiers:
+    'GaussianNB'
+    'DecisionTreeClassifier'
+    'KNeighborsRegressor'
+    'AdaBoostClassifier'
+    'svm'
+"""
+clf = 'GaussianNB'
+```
+
+## API Documentation
 
 NOTE: if you are running it locally the url will be http://0.0.0.0:5000/
 
