@@ -24,7 +24,7 @@ docker-compose up --build
 
 ## Model Documentation
 
-By default the model is fitted with the GaussianNB classifier, but you can change the **clf** variable in the fit_model.py and run the file again
+By default the model is fitted with the GaussianNB classifier, but you can change the **clf** variable in the fit_model.py file and run it again.
 
 ```
 """
